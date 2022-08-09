@@ -6,19 +6,32 @@
 #       "ToDoToDoList.txt" into a python Dictionary.
 #       Add each dictionary "row" to a python list "table"
 # ChangeLog: (when, who, what)
-#               2022/08/08, RSar, Created File
+#       2022/01/01, RRoot, Created starter script
+#       2022/08/08, RSar, Added code for each menu option
+#       2022/08/09, RSar, Prepare program for submission
 # ------------------------------- #
 
 # -- Data -- #
 # declare variables and constants
-objFile = "ToDoList.txt"   # An object that represents a file
+strProgramTitle = "To Do List v1.0"  # Program name
+objFile = "ToDoList.txt"  # An object that represents a file
+objFileData = ""  # A count of no. of lines of records loaded
+# from file
 # strData = ""  # A row of text data from the file
-dicRow = {}    # A row of data separated into elements of a dictionary
+dicRow = {}  # A row of data separated into elements of a dictionary
 # {Task,Priority}
 lstTable = []  # A list that acts as a 'table' of rows
-strMenu = ""   # A menu of user options
+strMenu = "\n\t" + "=" * 40 + \
+          "\n\tMenu of Options" + \
+          "\n\t" + "=" * 40 + \
+          """
+\t1) Show current data
+\t2) Add a new item
+\t3) Remove an existing item
+\t4) Save Data to File
+\t5) Exit Program
+          """  # A menu of user options
 strChoice = ""  # A Capture the user option selection
-
 
 # -- Processing -- #
 # Step 1 - When the program starts, load the data you have
@@ -27,10 +40,11 @@ strChoice = ""  # A Capture the user option selection
 
 f = open(objFile, "r")  # open text file
 
-print("\nWelcome to To Do List v1.0!"
-      "\n\n\tOpened file: " + objFile)
+print("\nWelcome to " + strProgramTitle + "!"  # Display program name
+                                          "\n\n\tOpened file: " + objFile)
 
-objFileData = len(open(objFile).readlines())  # counts rows in file
+# noinspection PyRedeclaration
+objFileData = len(open(objFile).readlines())  # Counts rows in file
 
 if objFileData >= 1:  # if file has data
 
@@ -47,25 +61,17 @@ else:  # if file does not have data
 # -- Input/Output -- #
 # Step 2 - Display a menu of choices to the user
 while True:
-    print("\n\t" + "="*40 +
-          "\n\tMenu of Options" +
-          "\n\t" + "=" * 40 +
-          """
-    1) Show current data
-    2) Add a new item
-    3) Remove an existing item
-    4) Save Data to File
-    5) Exit Program
-          """)
+
+    print(strMenu)  # Display menu
     strChoice = str(input("Which option would you like to perform? "
                           "[1 to 5]: "))
 
     # Step 3 - Show the current items in the table
     if strChoice.strip() == '1':
 
-        if len(lstTable) > 0:  # Display tasks
+        if len(lstTable) > 0:
 
-            print("\n\tDisplaying current data.")
+            print("\n\tDisplaying current data.")  # Display tasks
 
             print("\n\t" + "-" * 40)
             print("\tTask | Priority")
@@ -115,9 +121,7 @@ while True:
     elif strChoice.strip() == '3':
 
         while True:
-
             if len(lstTable) > 0:  # Display tasks
-
                 print("\n\tDisplaying current data.")
 
                 print("\n\t" + "-" * 40)
@@ -153,13 +157,30 @@ while True:
     # Step 6 - Save tasks to the ToDoToDoList.txt file
     elif strChoice.strip() == '4':
 
-        if len(lstTable) > 0:  # Display user inputs to user
-            f = open(objFile, "w")
+        if len(lstTable) > 0:  # Condition: lstTable not empty
+
+            print("\n\tDisplaying current data.")
+
+            print("\n\t" + "-" * 40)
+            print("\tTask | Priority")
+            print("\t" + "-" * 40)
+
             for row in lstTable:
-                f.writelines(str(row["Task"]) + "," +
-                             str(row["Priority"]) + "\n")
-            f.close()
-            print("\n\tData saved to: " + objFile)
+                print("\t" + row["Task"], row["Priority"], sep=" | ")
+
+            print("\n\t/end of data")
+
+            print("\n\tEnter \"S\" to [S]ave"
+                  "\n\tPress ENTER key to return to the Menu.")
+            s = input("\nDo you want to save data to file? ")
+            if s.lower() == "s":
+
+                f = open(objFile, "w")
+                for row in lstTable:
+                    f.writelines(str(row["Task"]) + "," +
+                                 str(row["Priority"]) + "\n")
+                f.close()
+                print("\n\tData saved to: " + objFile)
 
         else:
             print("\n\tNo data found.")
@@ -168,7 +189,7 @@ while True:
 
     # Step 7 - Exit program
     elif strChoice.strip() == '5':
-        print("\n\tEnter \"Q\" to Quit"
+        print("\n\tEnter \"Q\" to [Q]uit"
               "\n\tPress ENTER key to return to the Menu.")
         c = input("\nAre you sure you want to quit? ")
         if c.lower() == "q":
